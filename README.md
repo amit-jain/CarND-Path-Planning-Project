@@ -1,7 +1,83 @@
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
+### Reflections
+
+The goal of the path planning project to find a way for the ego car to drive around the track (in the simulator). The
+ path taken should be in a manner which is safe (no collisions etc. with other vehicles), comfortable (no jerks) and 
+ efficient.
+ The current information about other vehicles on the track is given by the sensor fusion data. Generally, the sensor 
+ fusion data would be used to predict the trajectory of the vehicles using multiple model algorithm or 
+ approaches like naive bayes classifier.
    
-### Simulator.
+  Since, the simulator simulates highway driving here no extensive prediction techniques were used. Instead, the 
+  sensor fusion data was directly used to extrapolate the position to a little further out to check for lane 
+  change feasibility. 
+
+#### Behavioral Planning
+
+One of the initial steps was to plan the behavior of the ego vehicle i.e whether to change the lane when being blocked 
+by a slower vehicle, when to speed up/slow down. This was accomplished by creating a cost/score function for each 
+lane. 
+##### Lane cost/score estimation
+
+Multiple score functions were defined and then the score for all added up estimate the score for the lane.
+The score functions were selected to score the lane on different factors e.g. safety, comfort, efficiency. The score 
+functions selected were:
+* _Lane keep score (Comfort)_ - To keep lane changing to a minimum and only when required for efficiency. This would 
+help in maintaining a comfortable ride.
+* _Closest vehicle ahead (Efficiency & safety)_ - speed and reference distance - The closest vehicle distance from the 
+ego vehicle and the speed at which travelling. The farther away the vehicle ahead of us is and the faster it is travelling is better as 
+it would allow the ego vehicle to travel faster.
+* _Closest vehicle behind (Safety)_ - speed and reference distance - The closest vehicle behind's distance and velocity
+ is also scored. The slower and farther away that vehicle is the better it is for safety in case we need to change 
+ lanes.
+* _Slower vehicles ahead (Efficiency)_ - The number of vehicles slower ahead of the ego vehicle. This would allow to 
+penalize lanes with lot of slow vehicles ahead for efficiency.
+
+The code for the calculating the score and different score functions are defined in the *Lane.h* header file and 
+implemented in the *Lane.cpp* class.
+
+##### Feasibility
+
+The lanes were sorted according to their score and then iterated to get a feasible list of lanes where different 
+driving actions like KL (keep lane), LC (lane change), Skip LC (double lane change). The basic feasibility check on 
+defined in the *isChangeFeasible* in the *Lane.cpp* class.
+
+##### Transition
+
+Once feasible lanes were defined the transition function calculated further the state for the next action. The state 
+would be the lane and the velocity to drive. The transition function is defined in the *Transition.h* header file and
+ implemented in the *Transition.cpp* file in the transition function. These parameters are then used for the 
+ trajectory generation.
+
+#### Trajectory Generation
+
+The trajectory generation uses the [ttk:spline](https://github.com/ttk592/spline) library and is built using the idea
+ demonstrated in the walk through video.
+The steps to generate trajectory are the following:
+* Create a spline with a couple of points from the present vehicle position and some anchor points further down and 
+lateral position as center point of the lane selected from the surrounding waypoints. This would create a smooth 
+curve on which to map the points to be used for the trajectory.
+* Convert all to the local car reference co-ordinates.
+* Create 50 points on the spline starting from the unused previous path points returned from the simulator.
+* The number of remaining points to be created is decided in such a way that they are evenly spaced based on the 
+reference velocity from the transition function above with distance upto 30 m further down so, that the acceleration 
+does not go beyond the required value.  
+* These 50 points which include the previous points and points 30 m further down the lane now provide the smooth
+trajectory the vehicle will drive on. These points are converted back to the map co-ordinates before sending them to 
+the simulator.
+
+#### Result
+The video of the output:
+[![Project Video](https://img.youtube.com/vi/K-jz4CCnUkQ/0.jpg)](https://www.youtube.com/watch?v=K-jz4CCnUkQ)
+#### Future Improvements
+
+Future improvements that can be added:
+* Behavior prediction for other vehicles on the track.
+* Some further improvements to lane scoring by possibly looking not just at the closest cars but behind them to plan 
+lane change as described in the lectures.
+
+### Simulator
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases).
 
 ### Goals
