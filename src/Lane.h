@@ -1,6 +1,8 @@
 #ifndef PATH_PLANNING_LANE_H
 #define PATH_PLANNING_LANE_H
 
+using namespace std;
+
 /**
  * Class to keep track of vehicle info for a lane.
  */
@@ -44,7 +46,7 @@ public:
 
     /* The current lane score */
     double score_val;
-    std::__1::vector<Vehicle> vehicles;
+    vector<Vehicle> vehicles;
 
     /**
      * Empty constructor
