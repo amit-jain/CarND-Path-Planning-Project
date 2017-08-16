@@ -41,6 +41,7 @@ void Transition::transition() {
 }
 
 void Transition::KL() {
+  cout << " KL " << endl;
 	if (hot) {
 		cout << "Decreasing velocity from " << finalVelocity << endl;
 		setFinalVelocity(finalVelocity = finalVelocity - VEL_DELTA);
@@ -48,23 +49,38 @@ void Transition::KL() {
 		cout << "Increasing velocity from " << finalVelocity << endl;
 		setFinalVelocity(finalVelocity = finalVelocity + VEL_DELTA);
 	}
-	lane = curr_lane;
+	this->lane = curr_lane;
 }
 
 void Transition::LC() {
-	if (finalVelocity < MAX_VEL) {
-		cout << "Increasing velocity from " << finalVelocity << endl;
+  cout << " LC " << endl;
+  if (finalVelocity < 25.0) {
+    cout << " Increasing velocity for next possible lane change " << finalVelocity << endl;
+    setFinalVelocity(finalVelocity = finalVelocity + VEL_DELTA);
+    this->lane = curr_lane;
+  } else if (finalVelocity < MAX_VEL) {
+		cout << " Increasing velocity from " << finalVelocity << endl;
 		setFinalVelocity(finalVelocity = finalVelocity + VEL_DELTA);
-	}
-	this->lane = lane_change[0];
+    this->lane = lane_change[0];
+    cout << " Executing lane change to " << lane << endl;
+	} else {
+    this->lane = lane_change[0];
+    cout << " Executing lane change to " << lane << endl;
+  }
 }
 
 void Transition::skip_LC() {
-	if (finalVelocity > 40.0) {
-    setFinalVelocity(finalVelocity = finalVelocity - VEL_SKIP_DELTA);
-		cout << "Lowering speed for double lane change " << finalVelocity << endl;
-	} else {
-		lane = lane_change[0];
-		cout << "Executing double lane change " << lane << endl;
+  cout << " skip_LC " << endl;
+  if (finalVelocity > 40.0) {
+    setFinalVelocity(finalVelocity = finalVelocity - VEL_DELTA);
+		cout << " Lowering speed for double lane change " << finalVelocity << endl;
+    this->lane = curr_lane;
+  } else if (finalVelocity < 25.0) {
+    cout << " Increasing velocity for next possible lane change " << finalVelocity << endl;
+    setFinalVelocity(finalVelocity = finalVelocity + VEL_DELTA);
+    this->lane = curr_lane;
+  } else {
+		this->lane = lane_change[0];
+		cout << " Executing double lane change to " << lane << endl;
 	}
 }

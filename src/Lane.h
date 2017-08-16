@@ -62,7 +62,7 @@ public:
      * @param car_s
      * @param lane
      */
-    Lane(double car_speed, double car_s, double lane);
+    Lane(double car_speed, double car_s, int lane);
 
 //		const bool operator< (const Lane &other) {
 //			return (score_val > other.score_val);

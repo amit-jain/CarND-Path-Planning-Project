@@ -40,7 +40,8 @@ implemented in the *Lane.cpp* class.
 ##### Feasibility
 
 The lanes were sorted according to their score and then iterated to get a feasible list of lanes where different 
-driving actions like KL (keep lane), LC (lane change), Skip LC (double lane change). The basic feasibility check on 
+driving actions can be undertaken like KL (keep lane), LC (lane change), Skip LC (double lane change). The basic 
+feasibility check is 
 defined in the *isChangeFeasible* in the *Lane.cpp* class.
 
 ##### Transition

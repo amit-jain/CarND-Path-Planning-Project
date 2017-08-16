@@ -255,6 +255,11 @@ int main() {
 
 					// Map vehicles according to their lanes
 					map<int, Lane> lanes;
+          for (int i = 0; i < 3; i++) {
+            Lane lane(car_speed, car_s, i);
+            lanes.insert(make_pair(i, lane));
+          }
+
 					for (int i = 0; i < sensor_fusion.size(); i++) {
 						float d = sensor_fusion[i][6];
 						int car_lane = 0;
@@ -267,14 +272,6 @@ int main() {
 							car_lane = 2;
 						} else {
 							continue;
-						}
-
-						Lane l(car_speed, car_s, lane);
-						if (lanes.count(car_lane)) {
-							l = lanes.at(car_lane);
-						} else {
-							l.id = car_lane;
-							lanes[car_lane] = l;
 						}
 
 						Vehicle vehicle;
@@ -294,7 +291,7 @@ int main() {
 					for (int i = 0; i < lanes.size(); i++) {
 						if (lanes.count(i)) {
 							double score = lanes[i].score();
-							cout << " Score " << score << " for lane " << lanes[i].id << endl;
+							cout << "Score " << score << " for lane " << lanes[i].id << endl;
 						}
 					}
 
@@ -308,22 +305,19 @@ int main() {
 					// Calculate feasible lane changes
 					bool too_close = false;
 					Transition transition(lane, ref_vel);
+          int transitions = 0;
 					for (int i = 0; i < lanesV.size(); i++) {
 						Lane l = lanesV[i];
 						cout << "Checking lane " << l.id << " current lane " << lane << endl;
-						cout << "     closestCarAheadSpeed " << l.closestCarAheadSpeed << " car_speed " << car_speed << endl;
-						cout << "     closestCarAheadS " << l.closestCarAheadS << " car_s " << car_s << endl;
-						cout << "     closestCarBehindSpeed " << l.closestCarBehindSpeed << " car_speed " << car_speed << endl;
-						cout << "     closestCarBehindS " << l.closestCarBehindS << " car_s " << car_s << endl;
 
 						if (lane == l.id) {
-							if (l.closestCarAheadS < 30) {
+              if ((l.closestCarAheadS / car_speed) * l.closestCarAheadSpeed < 15) {
 								too_close = true;
 							}
 							transition.push(lane, too_close);
 
 							// If the current lane with max score stay there
-							if (i == 0) {
+							if (transitions == 0) {
 								break;
 							}
 						}
@@ -335,6 +329,7 @@ int main() {
 
 						cout << "adding lane change " << l.id << endl;
 						transition.push(l.id, false);
+            transitions++;
 						cout << "lane change added " << l.id << endl;
 
 						// Only 1 lane change so finish otherwise continue looping to check feasibility of transition lane
@@ -349,6 +344,7 @@ int main() {
 					ref_vel = transition.finalVelocity;
 					cout << "lane next " << lane << endl;
 					cout << "vel next " << ref_vel << endl;
+          cout << endl;
 
 
 					// Trajectory generation
