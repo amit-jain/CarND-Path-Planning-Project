@@ -70,7 +70,7 @@ the simulator.
 
 #### Result
 The video of the output:
-[![Project Video](https://img.youtube.com/vi/K-jz4CCnUkQ/0.jpg)](https://www.youtube.com/watch?v=K-jz4CCnUkQ)
+[![Project Video](https://img.youtube.com/vi/pOckVM5TLRQ/0.jpg)](https://www.youtube.com/watch?v=pOckVM5TLRQ)
 #### Future Improvements
 
 Future improvements that can be added:

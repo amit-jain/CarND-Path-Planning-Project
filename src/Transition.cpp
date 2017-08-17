@@ -71,7 +71,7 @@ void Transition::LC() {
 
 void Transition::skip_LC() {
   cout << " skip_LC " << endl;
-  if (finalVelocity > 40.0) {
+  if (finalVelocity > 35.0) {
     setFinalVelocity(finalVelocity = finalVelocity - VEL_DELTA);
 		cout << " Lowering speed for double lane change " << finalVelocity << endl;
     this->lane = curr_lane;
